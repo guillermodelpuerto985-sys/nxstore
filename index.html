@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NX Store</title>
+<style>
+  :root {
+    --bg: #050505;
+    --panel: #0f0f10;
+    --border: #1f1f23;
+    --text: #f5f5f5;
+    --muted: #8b8b94;
+    --accent: #2f6bff;
+    --accent-hover: #5a8bff;
+    --glow: rgba(47, 107, 255, .22);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; text-decoration: none; }
+
+  /* NAV */
+  .nav-wrap {
+    position: sticky;
+    top: 12px;
+    z-index: 50;
+    padding: 0 1rem;
+  }
+  nav {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: .6rem .8rem .6rem 1.2rem;
+    background: rgba(15, 15, 16, .85);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+  }
+  .logo { font-weight: 800; font-size: 1.3rem; letter-spacing: -.5px; }
+  .logo .nx, .hero-logo .nx,
+  .logo .st, .hero-logo .st {
+    display: inline-block;
+    color: transparent;
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+  .logo .nx, .hero-logo .nx {
+    background-image: linear-gradient(135deg, #2f6bff, #7c5cff);
+  }
+  .logo .st, .hero-logo .st {
+    background-image: linear-gradient(135deg, #22d3ee, #3b82f6);
+  }
+  .nav-links {
+    display: flex;
+    gap: .2rem;
+    background: #141416;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: .3rem;
+  }
+  .nav-links a {
+    color: var(--muted);
+    font-size: .9rem;
+    padding: .45rem .8rem;
+    border-radius: 10px;
+    transition: color .15s, background .15s;
+  }
+  .nav-links a:hover { color: var(--text); }
+  .nav-links a.active { background: #22232a; color: var(--text); }
+  .nav-actions { display: flex; gap: .5rem; }
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    padding: .55rem 1rem;
+    border-radius: 999px;
+    font-size: .9rem;
+    font-weight: 600;
+    border: 1px solid var(--border);
+    background: #141416;
+    color: var(--text);
+    transition: background .15s, border-color .15s;
+    white-space: nowrap;
+  }
+  .pill:hover { border-color: #33333a; }
+  .pill.primary {
+    background: linear-gradient(135deg, #2f6bff, #7c5cff);
+    color: #fff;
+    border-color: transparent;
+  }
+  .pill.primary:hover { background: linear-gradient(135deg, #5a8bff, #9a7dff); }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    min-height: 78vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 4rem 1.5rem 3rem;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 900px;
+    height: 600px;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(closest-side, var(--glow), transparent 70%);
+    pointer-events: none;
+  }
+  .hero-logo {
+    position: relative;
+    font-size: clamp(3.5rem, 11vw, 8rem);
+    font-weight: 800;
+    letter-spacing: -.05em;
+    line-height: 1;
+  }
+  .hero-logo .dot {
+    display: inline-block;
+    width: .18em;
+    height: .18em;
+    border-radius: 50%;
+    background: var(--accent);
+    margin-left: .04em;
+    vertical-align: baseline;
+  }
+  .hero p {
+    position: relative;
+    color: var(--muted);
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    max-width: 640px;
+    margin-top: 1.8rem;
+  }
+  .hero .cta {
+    position: relative;
+    margin-top: 2.2rem;
+    padding: .9rem 1.8rem;
+    font-size: 1rem;
+    font-weight: 700;
+  }
+  .trust {
+    position: relative;
+    margin-top: 1.4rem;
+    color: var(--muted);
+    font-size: .85rem;
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+  }
+  .trust i {
+    display: inline-block;
+    width: 14px; height: 14px;
+    border: 2px solid var(--accent);
+    border-radius: 50%;
+    position: relative;
+  }
+  .trust i::after {
+    content: "";
+    position: absolute;
+    left: 3px; top: 0px;
+    width: 4px; height: 7px;
+    border: solid var(--accent);
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+
+  /* STORE */
+  section.store {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+  }
+  .section-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .section-head h2 { font-size: 1.8rem; letter-spacing: -.02em; }
+  .section-head p { color: var(--muted); margin-top: .3rem; }
+  .search {
+    width: min(320px, 100%);
+    padding: .65rem 1rem;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: #0c0c0d;
+    color: var(--text);
+    font-size: .95rem;
+  }
+  .search:focus { outline: none; border-color: var(--accent); }
+  .filters { display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+  .filter {
+    background: #0c0c0d;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: .45rem .9rem;
+    border-radius: 999px;
+    cursor: pointer;
+    font-size: .85rem;
+    font-family: inherit;
+  }
+  .filter.active { background: var(--accent); color: #0a0a0a; border-color: var(--accent); font-weight: 600; }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1rem;
+  }
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: border-color .2s, transform .2s;
+  }
+  .card:hover { border-color: #26356a; transform: translateY(-2px); }
+  .thumb {
+    height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.8rem;
+    background: radial-gradient(circle at 50% 30%, #141f40, #0b0b0c 70%);
+    border-bottom: 1px solid var(--border);
+  }
+  .card-body { padding: 1.1rem 1.2rem 1.2rem; display: flex; flex-direction: column; gap: .5rem; flex: 1; }
+  .card-top { display: flex; justify-content: space-between; align-items: center; gap: .5rem; }
+  .card-title { font-size: 1.05rem; font-weight: 700; }
+  .badge {
+    font-size: .72rem;
+    padding: .2rem .6rem;
+    border-radius: 999px;
+    background: rgba(47, 107, 255, .15);
+    color: #5a8bff;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .card-desc { color: var(--muted); font-size: .9rem; flex: 1; }
+  .meta { color: #5f5f68; font-size: .78rem; }
+  .actions { display: flex; gap: .5rem; margin-top: .6rem; }
+  .actions .pill { flex: 1; justify-content: center; }
+  .empty { text-align: center; color: var(--muted); padding: 3rem 0; display: none; }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem 1.5rem;
+    text-align: center;
+    color: var(--muted);
+    font-size: .85rem;
+  }
+  footer nav.links { display: flex; justify-content: center; gap: 1.2rem; margin-bottom: .8rem; }
+  footer a:hover { color: var(--text); }
+
+  @media (max-width: 800px) {
+    .nav-links { display: none; }
+  }
+  @media (max-width: 480px) {
+    nav { padding-left: .8rem; }
+    .nav-actions .pill.ghost { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="nav-wrap">
+  <nav>
+    <a class="logo" href="#"><span class="nx">NX</span><span class="st">Store</span></a>
+    <div class="nav-links">
+      <a class="active" href="#">Inicio</a>
+      <a href="#tienda">Tienda</a>
+      <a href="#resenas">Reseñas</a>
+      <a href="#normas">Normas</a>
+      <a href="#terminos">Términos</a>
+    </div>
+    <div class="nav-actions">
+      <a class="pill ghost" href="https://discord.gg/TU_INVITACION" target="_blank" rel="noopener">Discord</a>
+      <a class="pill primary" href="#tienda">Entrar</a>
+    </div>
+  </nav>
+</div>
+
+<header class="hero" id="inicio">
+  <div class="hero-logo"><span class="nx">NX</span><span class="st">Store</span></div>
+  <p>Scripts gratuitos para tu servidor de FiveM. Descárgalos, instálalos y haz que tus jugadores no quieran irse.</p>
+  <a class="pill primary cta" href="#tienda">Empezar a explorar →</a>
+  <div class="trust"><i></i> Scripts probados y con soporte en Discord</div>
+</header>
+
+<section class="store" id="tienda">
+  <div class="section-head">
+    <div>
+      <h2>Tienda</h2>
+      <p>Todos los scripts son gratuitos.</p>
+    </div>
+    <input id="search" class="search" type="search" placeholder="Buscar script...">
+  </div>
+
+  <div class="filters" id="filters">
+    <button class="filter active" data-filter="all">Todos</button>
+    <button class="filter" data-filter="Trabajos">Trabajos</button>
+    <button class="filter" data-filter="Interfaz">Interfaz</button>
+    <button class="filter" data-filter="Vehículos">Vehículos</button>
+    <button class="filter" data-filter="Utilidades">Utilidades</button>
+  </div>
+
+  <div class="grid" id="grid"></div>
+  <p class="empty" id="empty">No hay scripts que coincidan con la búsqueda.</p>
+</section>
+
+<footer id="normas">
+  <nav class="links">
+    <a href="#resenas">Reseñas</a>
+    <a href="#normas">Normas</a>
+    <a href="#terminos">Términos de servicio</a>
+  </nav>
+  <p>© 2026 NX Store, de NX Development. Todos los derechos reservados.</p>
+</footer>
+
+<script>
+  // Edita esta lista para cambiar tus scripts.
+  // download: enlace al .zip (por ejemplo, un Release de GitHub)
+  // repo: enlace al código y la documentación
+  const scripts = [
+    { name: "Trabajo de Taxi", category: "Trabajos", icon: "🚕", version: "1.0.0",
+      description: "Trabajo de taxista con paradas, recogidas y pago por distancia.", download: "#", repo: "#" },
+    { name: "HUD Moderno", category: "Interfaz", icon: "🎛️", version: "2.1.0",
+      description: "HUD configurable con salud, chaleco, hambre, sed y velocímetro.", download: "#", repo: "#" },
+    { name: "Llaves de Vehículo", category: "Vehículos", icon: "🔑", version: "1.2.3",
+      description: "Bloquea, desbloquea y arranca vehículos con sistema de llaves.", download: "#", repo: "#" },
+    { name: "Menú de Interacciones", category: "Utilidades", icon: "🧰", version: "1.0.5",
+      description: "Menú contextual para jugadores, vehículos y objetos cercanos.", download: "#", repo: "#" }
+  ];
+
+  const grid = document.getElementById("grid");
+  const empty = document.getElementById("empty");
+  const search = document.getElementById("search");
+  const filterButtons = document.querySelectorAll(".filter");
+  let currentFilter = "all";
+
+  function render() {
+    const q = search.value.trim().toLowerCase();
+    const list = scripts.filter(s =>
+      (currentFilter === "all" || s.category === currentFilter) &&
+      (!q || s.name.toLowerCase().includes(q) || s.description.toLowerCase().includes(q))
+    );
+
+    grid.innerHTML = "";
+    empty.style.display = list.length ? "none" : "block";
+
+    list.forEach(s => {
+      const card = document.createElement("article");
+      card.className = "card";
+      card.innerHTML = `
+        <div class="thumb">${s.icon}</div>
+        <div class="card-body">
+          <div class="card-top">
+            <h3 class="card-title"></h3>
+            <span class="badge">Gratis</span>
+          </div>
+          <p class="card-desc"></p>
+          <div class="meta">${s.category} · v${s.version}</div>
+          <div class="actions">
+            <a class="pill primary" href="${s.download}" download>Descargar</a>
+            <a class="pill" href="${s.repo}" target="_blank" rel="noopener">Código</a>
+          </div>
+        </div>`;
+      card.querySelector(".card-title").textContent = s.name;
+      card.querySelector(".card-desc").textContent = s.description;
+      grid.appendChild(card);
+    });
+  }
+
+  filterButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
+      filterButtons.forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      currentFilter = btn.dataset.filter;
+      render();
+    });
+  });
+
+  search.addEventListener("input", render);
+  render();
+</script>
+
+</body>
+</html>
